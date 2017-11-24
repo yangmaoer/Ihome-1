@@ -7,6 +7,9 @@ from flask_session import Session
 from flask_wtf import CSRFProtect
 
 import redis
+import logging
+from logging.handlers import RotatingFileHandler
+
 
 db = SQLAlchemy()
 
@@ -14,6 +17,20 @@ db = SQLAlchemy()
 redis_store = None
 
 
+# 配置日志信息
+# 创建日志记录器，指明保存路径，日志大小及个数
+file_log_handler=RotatingFileHandler('logs/log',maxBytes=1024*1024*100,backupCount=10)
+# 创建日志记录的格式
+formatter=logging.Formatter('%(levelname)s %(filename)s:%(lineno)d %(message)s')
+# w为刚创建的日志记录设置格式
+file_log_handler.setFormatter(formatter)
+# 为全局的日志工具对象添加日志记录器
+logging.getLogger().addHandler(file_log_handler)
+# 设置日志的记录等级
+logging.basicConfig(level=logging.DEBUG)
+
+
+# 工厂模式
 def create_app(config_name):
     """
     创建flask的应用对象
