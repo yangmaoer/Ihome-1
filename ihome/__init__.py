@@ -9,25 +9,24 @@ from flask_wtf import CSRFProtect
 import redis
 import logging
 from logging.handlers import RotatingFileHandler
-
+from ihome.utils.commons import ReConverter
 
 db = SQLAlchemy()
 
 # 创建redis连接对象
 redis_store = None
 
-
 # 配置日志信息
 # 创建日志记录器，指明保存路径，日志大小及个数
-file_log_handler=RotatingFileHandler('logs/log',maxBytes=1024*1024*100,backupCount=10)
+file_log_handler = RotatingFileHandler('logs/log', maxBytes=1024 * 1024 * 100, backupCount=10)
 # 创建日志记录的格式
-formatter=logging.Formatter('%(levelname)s %(filename)s:%(lineno)d %(message)s')
+formatter = logging.Formatter('%(levelname)s %(filename)s:%(lineno)d %(message)s')
 # w为刚创建的日志记录设置格式
 file_log_handler.setFormatter(formatter)
 # 为全局的日志工具对象添加日志记录器
 logging.getLogger().addHandler(file_log_handler)
 # 设置日志的记录等级
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)  # 当设置开发模式，DEBUG开启时，设置的日志记录等级会默认为最低级的DEBUG
 
 
 # 工厂模式
@@ -48,7 +47,7 @@ def create_app(config_name):
 
     # 初始化redis工具
     global redis_store
-    redis_store=redis.StrictRedis(host=config_class.REDIS_HOST, port=config_class.REDIS_PORT)
+    redis_store = redis.StrictRedis(host=config_class.REDIS_HOST, port=config_class.REDIS_PORT)
 
     # 用flask-session，将session数据保存到redis中
     Session(app)
@@ -56,8 +55,14 @@ def create_app(config_name):
     # 为flask补充csrf防护
     CSRFProtect(app)
 
+    # 添加自定义转换器，放在应用建立后且注册蓝图前
+    app.url_map.converters['re'] = ReConverter
+
     # 注册蓝图
     from ihome import api_1_0
-    app.register_blueprint(api_1_0.api, url_prefix="/api_1")
+    app.register_blueprint(api_1_0.api, url_prefix="/api_1.0")
+
+    from ihome import web_html
+    app.register_blueprint(web_html.html,)
 
     return app
