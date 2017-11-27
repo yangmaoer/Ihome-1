@@ -17,7 +17,12 @@ db = SQLAlchemy()
 redis_store = None
 
 # 配置日志信息
+# 设置日志的记录等级
+# logging.getLogger().setLevel(logging.DEBUG)
+# 当设置开发模式，DEBUG开启时，设置的日志记录等级会默认为最低级的DEBUG
 # 创建日志记录器，指明保存路径，日志大小及个数
+logging.basicConfig(level=logging.DEBUG)
+
 file_log_handler = RotatingFileHandler('logs/log', maxBytes=1024 * 1024 * 100, backupCount=10)
 # 创建日志记录的格式
 formatter = logging.Formatter('%(levelname)s %(filename)s:%(lineno)d %(message)s')
@@ -26,7 +31,7 @@ file_log_handler.setFormatter(formatter)
 # 为全局的日志工具对象添加日志记录器
 logging.getLogger().addHandler(file_log_handler)
 # 设置日志的记录等级
-logging.basicConfig(level=logging.WARNING)  # 当设置开发模式，DEBUG开启时，设置的日志记录等级会默认为最低级的DEBUG
+# logging.basicConfig(level=logging.DEBUG)  # 当设置开发模式，DEBUG开启时，设置的日志记录等级会默认为最低级的DEBUG
 
 
 # 工厂模式
@@ -60,7 +65,7 @@ def create_app(config_name):
 
     # 注册蓝图
     from ihome import api_1_0
-    app.register_blueprint(api_1_0.api, url_prefix="/api_1.0")
+    app.register_blueprint(api_1_0.api, url_prefix="/api_1_0")
 
     from ihome import web_html
     app.register_blueprint(web_html.html,)

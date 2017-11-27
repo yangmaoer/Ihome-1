@@ -24,7 +24,7 @@ function generateImageCode() {
     // 1. 生成图片验证码编号
     imageCodeId = generateUUID();
     // 是指图片url
-    var url = "/api_1.0/image_codes/" + imageCodeId;
+    var url = "/api_1_0/image_codes/" + imageCodeId;
     $(".image-code img").attr("src", url);
 }
 
