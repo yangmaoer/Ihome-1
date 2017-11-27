@@ -44,7 +44,37 @@ function sendSMSCode() {
         $(".phonecode-a").attr("onclick", "sendSMSCode();");
         return;
     }
-    $.get("/api/smscode", {mobile:mobile, code:imageCode, codeId:imageCodeId}, 
+
+    //构造向后端请求的参数
+    var req_data={
+        image_code:imageCode,
+        image_code_id:imageCodeId
+    };
+
+    alert(imageCodeId);
+    //向后端发送请求
+    $.get("/api_1_0/sms_code/"+mobile,req_data,function (resp) {
+        if (resp.errno=='0'){
+            var num=60;
+            var timer=setInterval(function () {
+                if (num>=1){
+                    // 修改倒计时文本
+                    $(".phonecode-a").html(num + "秒");
+                    num -= 1;
+                }else{
+                    $(".phonecode-a").html("获取验证码");
+                    $(".phonecode-a").attr("onclick", "sendSMSCode();");
+                    clearInterval(timer);
+                }
+            },1000,60)
+        }else{
+            alert(resp.errmsg);
+            $(".phonecode-a").attr("onclick", "sendSMSCode();");
+        }
+    });
+
+
+/*    $.get("/api_1_0/sms_code/"+mobile, {image_code:imageCode, image_code_id:imageCodeId},
         function(data){
             if (0 != data.errno) {
                 $("#image-code-err span").html(data.errmsg); 
@@ -67,7 +97,7 @@ function sendSMSCode() {
                     duration = duration - 1;
                 }, 1000, 60); 
             }
-    }, 'json'); 
+    }, 'json'); */
 }
 
 $(document).ready(function() {
@@ -115,4 +145,4 @@ $(document).ready(function() {
             return;
         }
     });
-})
+});
