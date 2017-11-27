@@ -1,3 +1,4 @@
+// js读取cookie的方法
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return r ? r[1] : undefined;
@@ -51,7 +52,7 @@ function sendSMSCode() {
         image_code_id:imageCodeId
     };
 
-    alert(imageCodeId);
+    //alert(imageCodeId);
     //向后端发送请求
     $.get("/api_1_0/sms_code/"+mobile,req_data,function (resp) {
         if (resp.errno=='0'){
@@ -120,10 +121,10 @@ $(document).ready(function() {
     });
     $(".form-register").submit(function(e){
         e.preventDefault();
-        mobile = $("#mobile").val();
-        phoneCode = $("#phonecode").val();
-        passwd = $("#password").val();
-        passwd2 = $("#password2").val();
+        var mobile = $("#mobile").val();
+        var phoneCode = $("#phonecode").val();
+        var passwd = $("#password").val();
+        var passwd2 = $("#password2").val();
         if (!mobile) {
             $("#mobile-err span").html("请填写正确的手机号！");
             $("#mobile-err").show();
@@ -144,5 +145,32 @@ $(document).ready(function() {
             $("#password2-err").show();
             return;
         }
+
+        // 调用ajax向后端发送注册请求
+        var req_data = {
+            mobile: mobile,
+            smscode: phoneCode,
+            passwd: passwd,
+            passwd2: passwd2
+        };
+        var req_json = JSON.stringify(req_data);
+        $.ajax({
+            url: "/api_1_0/users",
+            type: "post",
+            data: req_json,
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                "X-CSRFToken": getCookie("csrf_token")
+            }, // 请求头，将csrf_token值放到请求中，方便后端csrf进行验证
+            success: function (resp) {
+                if (resp.errno == "0") {
+                    // 注册成功，跳转到主页
+                    location.href = "/index.html";
+                } else {
+                    alert(resp.errmsg);
+                }
+            }
+        })
     });
 });
