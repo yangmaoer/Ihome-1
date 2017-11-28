@@ -1,6 +1,6 @@
 # coding:utf-8
 from datetime import datetime
-# from ihome import constants
+from ihome import constants
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -34,6 +34,16 @@ class User(BaseModel, db.Model):
     def check_passwd(self, passwd):
         # 检查密码正确性
         return check_password_hash(self.password_hash, passwd)
+
+    def to_dict(self):
+        user_dict={
+            "user_id": self.id,
+            "name": self.name,
+            "mobile": self.mobile,
+            "avatar": constants.QINIU_URL_DOMAIN + self.avatar_url if self.avatar_url else "",
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        return user_dict
 
 
 class Area(BaseModel, db.Model):
