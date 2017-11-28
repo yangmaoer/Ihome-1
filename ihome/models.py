@@ -2,7 +2,7 @@
 from datetime import datetime
 # from ihome import constants
 from . import db
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class BaseModel(object):
@@ -28,8 +28,12 @@ class User(BaseModel, db.Model):
         raise ArithmeticError('这个属性只设置，不能读取')
 
     @password.setter
-    def password(self,value):
-        self.password_hash=generate_password_hash(value)
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
+
+    def check_passwd(self, passwd):
+        # 检查密码正确性
+        return check_password_hash(self.password_hash, passwd)
 
 
 class Area(BaseModel, db.Model):
