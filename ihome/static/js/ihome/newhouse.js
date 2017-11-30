@@ -14,7 +14,7 @@ $(document).ready(function(){
             //     var area = areas[i];
             //     $("#area-id").append('<option value="'+ area.id +'">'+ area.name +'</option>');
             // } // 这种做法后端会导致查看网页源代码时直接可以看到区域信息,故需通过采用js模板获取
-            var html = template("areas-tmpl", {areas: areas});
+            var html = template("areas-temp", {areas: areas});
             $("#area-id").html(html);
         }else{
             alert(resp.errmsg);

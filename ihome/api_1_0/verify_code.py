@@ -8,6 +8,7 @@ from ihome.utils.response_code import RET
 from ihome.models import User
 from ihome.libs.yuntongxun.sms import CCP
 import random
+from ihome.tasks.task_sms import send_sms
 
 
 @api.route('/image_codes/<image_code_id>')
@@ -112,16 +113,25 @@ def get_smscode(mobile):
     #     current_app.logger.error(e)
     #     return jsonify(errno=RET.THIRDERR, errmsg='发送异常')
 
+
+    # # 发送短信
+    # try:
+    #     ccp = CCP()
+    #     result = ccp.send_template_sms(mobile, [sms_code, int(constants.SMS_CODE_REDIS_EXPIRES/60)], 1)
+    # except Exception as e:
+    #     current_app.logger.error(e)
+    #     return jsonify(errno=RET.THIRDERR, errmsg="发送异常")
+    #
+    # # 返回值
+    # if result == 0:
+    #     return jsonify(errno=RET.OK, errmsg="发送成功")
+    # else:
+    #     return jsonify(errno=RET.THIRDERR, errmsg="发送失败")
+
     # 发送短信
-    try:
-        ccp = CCP()
-        result = ccp.send_template_sms(mobile, [sms_code, int(constants.SMS_CODE_REDIS_EXPIRES/60)], 1)
-    except Exception as e:
-        current_app.logger.error(e)
-        return jsonify(errno=RET.THIRDERR, errmsg="发送异常")
+    # 使用celery异步发送短信, delay函数调用后立即返回
+    send_sms.delay(mobile, [sms_code, int(constants.SMS_CODE_REDIS_EXPIRES/60)], 1)
 
     # 返回值
-    if result == 0:
-        return jsonify(errno=RET.OK, errmsg="发送成功")
-    else:
-        return jsonify(errno=RET.THIRDERR, errmsg="发送失败")
+    # 发送成功
+    return jsonify(errno=RET.OK, errmsg="发送成功")
