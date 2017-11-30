@@ -26,6 +26,8 @@ $(document).ready(function () {
                 if (resp.errno == '0') {
                     var avatarurl = resp.data.avatar_url;
                     $('#user-avatar').attr('src', avatarurl)
+                }else if(resp.errno == '4101'){
+                    location.href='/index.html'
                 } else {
                     alert(resp.errmsg)
                 }

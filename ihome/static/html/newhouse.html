@@ -39,23 +39,12 @@
                         <div class="form-group">
                             <label for="area-id">所在城区</label>
                             <select class="form-control" id="area-id" name="area_id">
-                              <option value="1">东城区</option>
-                              <option value="2">西城区</option>
-                              <option value="3">朝阳区</option>
-                              <option value="4">海淀区</option>
-                              <option value="5">昌平区</option>
-                              <option value="6">丰台区</option>
-                              <option value="7">房山区</option>
-                              <option value="8">通州区</option>
-                              <option value="9">顺义区</option>
-                              <option value="10">大兴区</option>
-                              <option value="11">怀柔区</option>
-                              <option value="12">平谷区</option>
-                              <option value="13">密云区</option>
-                              <option value="14">延庆区</option>
-                              <option value="15">石景山区</option>
-                              <option value="16">门头沟区</option>
                             </select>
+                            <script type="text/html" id="areas-tmpl">
+                                {{ each areas as area}}
+                                <option value="{{ area.id }}">{{ area.name }}</option>
+                                {{ /each }}
+                            </script>
                         </div>
                         <div class="form-group">
                             <label for="house-address">详细地址</label>
@@ -276,6 +265,7 @@
                 <div class="error-msg text-center"><i class="fa fa-exclamation-circle"></i>请将全部信息填写完整后再提交</div>
             </form>
             <form id="form-house-image" action="/api/house/image" method="post" enctype="multipart/form-data">
+                <!--通过在这里设置input标签,用于传递house_id的值与图片进行关联-->
                 <input type="hidden" name="house_id" id="house-id" value="">
                 <li>
                     <div class="house-title">
@@ -307,6 +297,7 @@
     
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.form.min.js"></script>
+    <script src="/static/js/template.js"></script>
     <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="/static/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script src="/static/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>

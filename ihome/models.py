@@ -23,6 +23,7 @@ class User(BaseModel, db.Model):
     houses = db.relationship("House", backref="user")  # 用户发布的房屋
     orders = db.relationship("Order", backref="user")  # 用户下的订单
 
+    # 通过设置此装饰器,将方法封装为一个只可设置不可读取的属性
     @property
     def password(self):
         raise ArithmeticError('这个属性只设置，不能读取')
@@ -36,7 +37,7 @@ class User(BaseModel, db.Model):
         return check_password_hash(self.password_hash, passwd)
 
     def to_dict(self):
-        user_dict={
+        user_dict = {
             "user_id": self.id,
             "name": self.name,
             "mobile": self.mobile,
@@ -52,6 +53,13 @@ class Area(BaseModel, db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 区域编号
     name = db.Column(db.String(32), nullable=False)  # 区域名字
     houses = db.relationship("House", backref="area")  # 区域的房屋
+
+    def to_dict(self):
+        area_dict = {
+            "id": self.id,
+            "name": self.name,
+        }
+        return area_dict
 
 
 # 房屋设施表，建立房屋与设施的多对多关系

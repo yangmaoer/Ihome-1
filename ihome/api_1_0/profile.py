@@ -24,7 +24,7 @@ def set_user_avatar():
     if image_file is None:
         return jsonify(errno=RET.PARAMERR, errmsg='图片未上传')
 
-    # 调用七牛上传图片, 返回文件名
+    # 调用七牛上传图片, 并获取返回的文件名
     image_data = image_file.read()
     try:
         file_name = storage(image_data)

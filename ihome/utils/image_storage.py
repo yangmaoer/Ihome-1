@@ -35,6 +35,6 @@ def storage(filedata):
     # assert ret['hash'] == etag(localfile)
 
 if __name__ == '__main__':
-    with open('./01.jpg','rb') as f:
+    with open('./02.jpg','rb') as f:
         filedata = f.read()
         storage(filedata)
