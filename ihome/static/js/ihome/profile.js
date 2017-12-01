@@ -25,6 +25,7 @@ $(document).ready(function () {
             success: function (resp) {
                 if (resp.errno == '0') {
                     var avatarurl = resp.data.avatar_url;
+                    alert(avatarurl);
                     $('#user-avatar').attr('src', avatarurl)
                 }else if(resp.errno == '4101'){
                     location.href='/index.html'
@@ -34,6 +35,21 @@ $(document).ready(function () {
             }
         })
     });
+
+        // 在页面加载是向后端查询用户的信息
+    $.get("/api_1_0/user/center", function(resp){
+        // 用户未登录
+        if ("4101" == resp.errno) {
+            location.href = "/login.html";
+        }
+        // 查询到了用户的信息
+        else if ("0" == resp.errno) {
+            $("#user-name").val(resp.data.name);
+            if (resp.data.avatar) {
+                $("#user-avatar").attr("src", resp.data.avatar);
+            }
+        }
+    }, "json");
 
     $('#form-name').submit(function (e) {
         e.preventDefault();

@@ -117,17 +117,17 @@ def get_user_profile():
     if user is None:
         return jsonify(errno=RET.PARAMERR, errmsg='无效用户信息 ')
 
-    return jsonify(errno=RET.OK, errmsg='OK',data=user.to_dict())
+    return jsonify(errno=RET.OK, errmsg='OK', data=user.to_dict())
 
 
 @api.route('/user/auth', methods=['POST'])
 @login_required
 def set_auth():
     # 获取用户信息
-    user_id=g.user_id
+    user_id = g.user_id
 
     # 获取参数信息
-    req_data=request.get_json()
+    req_data = request.get_json()
     if not req_data:
         return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
 
@@ -135,12 +135,12 @@ def set_auth():
     id = req_data.get('id_card')
 
     # 校验参数
-    if not all([name,id]):
+    if not all([name, id]):
         return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
 
     # 保存用户的姓名与身份证号
     try:
-        User.query.filter_by(id=user_id,real_name=None,id_card=None).update({'real_name':name,'id_card':id})
+        User.query.filter_by(id=user_id, real_name=None, id_card=None).update({'real_name': name, 'id_card': id})
         db.session.commit()
     except Exception as e:
         current_app.logger.error(e)
@@ -154,10 +154,10 @@ def set_auth():
 @login_required
 def get_auth():
     user_id = g.user_id
-    print('*'*20)
-    print(user_id)
+    # print('*'*20)
+    # print(user_id)
     try:
-        user=User.query.get(user_id) # 此处使用get时,要注意与filter进行区分
+        user = User.query.get(user_id)  # 此处使用get时,要注意与filter进行区分
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR, errmsg='数据库错误')
