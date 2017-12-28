@@ -69,7 +69,15 @@ $(document).ready(function(){
         }
     });
 
-
+    $.get('/api_1_0/areas',function (resp) {
+        if ('0'==resp.errno){
+            var areas=resp.data;
+            var html = template("area-temp", {areas: areas});
+            $("#area-list").html(html);
+        }else{
+            alert(resp.errmsg);
+        }
+    });
 
 
     var mySwiper = new Swiper ('.swiper-container', {

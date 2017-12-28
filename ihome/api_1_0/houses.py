@@ -353,3 +353,4 @@ def get_houses_list():
             current_app.logger.error(e)
 
     return resp_json, 200, {'Content-Type': 'application/json'}
+
